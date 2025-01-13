@@ -1,0 +1,7 @@
+{
+    "name": "Debug Windows",
+    "cwd": "${workspaceFolder}",
+    "type": "reactnative",
+    "request": "launch",
+    "platform": "windows"
+  }
