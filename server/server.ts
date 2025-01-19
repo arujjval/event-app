@@ -7,8 +7,7 @@ import dotenv from 'dotenv';
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(`mongodb+srv://arujjwal0208:00000000@cluster0.s6fat.mongodb.net/
-                ?retryWrites=true&w=majority&appName=Cluster0`);
+    await mongoose.connect(process.env.MONGO_ATLAS_URI!);
     console.log('MongoDB connected');
   } catch (error) {
     console.error('Error connecting to MongoDB', error);
