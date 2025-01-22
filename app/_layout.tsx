@@ -8,6 +8,7 @@ import 'react-native-reanimated';
 import './global.css'
 import { useEffect, useState } from 'react';
 
+
 export default function RootLayout() {
   const [fontsLoaded] =  useFonts({
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),

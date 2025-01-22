@@ -14,9 +14,16 @@ export default function TabLayout() {
       }}
       />
       <Tabs.Screen
-      name="sign-in"
+      name="explore"
       options={{
-        title: 'Sign In',
+        title: 'Explore',
+        tabBarIcon: () => <Image source={Home} className='size-8'/>,
+      }}
+      />
+      <Tabs.Screen
+      name="profile"
+      options={{
+        title: 'Profile',
         tabBarIcon: () => <Image source={Home} className='size-8'/>,
       }}
       />

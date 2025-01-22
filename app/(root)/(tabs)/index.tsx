@@ -1,7 +1,7 @@
 import GradientBg from '@/components/gradient-bg'
 import { AngleLeft, Search } from '@/assets/icons'
-import { Link } from 'expo-router'
-import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native'
+import { Link, Redirect } from 'expo-router'
+import { View, Text, Image, ScrollView, TouchableOpacity} from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Filters from '@/components/filters'
 import Card from '@/components/card'
@@ -47,6 +47,9 @@ function index() {
                 <Card />
              </ScrollView>
           </View>
+
+          <Link href="/auth/sign-in">Sign-in</Link>
+          <Link href="/auth/login">Login</Link>
       </View>
     </SafeAreaProvider>
   )

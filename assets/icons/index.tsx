@@ -14,3 +14,5 @@ export { default as UserCircle } from './user_circle.png';
 export { default as User } from './user.png';
 export { default as Users } from './users.png';
 export { default as VideoCameraAlt } from './video-camera-alt.png';
+export { default as Hide } from './hide.png';
+export { default as Show } from './show.png';
