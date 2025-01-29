@@ -1,9 +1,10 @@
 import { Hide, Show } from '@/assets/icons'
-import { signIn } from '@/lib/axios'
+import { signIn } from '@/server/controllers'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { signUp } from '@/lib/userAuth'
 
 function Signup() {
   const [username, setUsername] = useState('');
@@ -11,13 +12,16 @@ function Signup() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     try {
-      const data = signIn(username, email, password);
-
-      console.log(data)
-    } catch (error) {
-      console.error('Error signing up:', error);
+      const response  = await signUp(username, email, password);
+      if(response.status === 200) {
+        Alert.alert('Success', 'Account created successfully');
+        router.push('/auth/login');
+      }
+    }
+    catch(e) {
+      Alert.alert('Error', 'An error occured while creating account');
     }
   }
 

@@ -1,16 +1,22 @@
 import { Hide, Show } from '@/assets/icons'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { login } from '@/lib/userAuth/user'
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = () => {
-
+  const handleLogin = async () => {
+    try {
+      const response = await login(email, password);
+      return response
+    } catch (error) {
+      Alert.alert('Error', 'Invalid credentials');
+    }
   }
 
   return (
@@ -46,7 +52,8 @@ function Login() {
           </Text>
           <TouchableOpacity onPress={() => (router.push('/auth/sign-in'))}>
             <Text className='text-primary-100 font-poppins-medium
-              text-sm'>
+              text-sm'
+              onPress={handleLogin}>
                 Sign up
             </Text>
           </TouchableOpacity>
