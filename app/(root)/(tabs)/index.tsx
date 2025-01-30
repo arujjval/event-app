@@ -5,8 +5,22 @@ import { View, Text, Image, ScrollView, TouchableOpacity} from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Filters from '@/components/filters'
 import Card from '@/components/card'
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react'
+import jwtDecode from 'jwt-decode';
 
 function index() {
+  const [user, setUser] = useState(null);
+
+  const token = useSelector((state: any) => state.auth.token);
+
+  useEffect(() => {
+    if (token) {
+      const decoded = jwtDecode(token);
+      setUser(decoded);
+    }
+  }, [token]);
+
   return (
     <SafeAreaProvider className='w-full h-full'>
       <View className='w-full h-1/6 absolute top-0 left-0'>
@@ -47,6 +61,10 @@ function index() {
                 <Card />
              </ScrollView>
           </View>
+
+          <Text>
+            {}
+          </Text>
 
           <Link href="/auth/sign-in">Sign-in</Link>
           <Link href="/auth/login">Login</Link>

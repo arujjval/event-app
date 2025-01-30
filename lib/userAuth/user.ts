@@ -1,5 +1,6 @@
 import axios from "axios";
 import api from "../api";
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const signUp = async (username: string, email: string, password: string) => {
     try {
@@ -23,7 +24,9 @@ export const login = async (email: string, password: string) => {
             }
         });
 
-        return response.data;
+        await AsyncStorage.setItem('jwtToken', response!.data.token);
+
+        return response.data
     } catch (error) {
         return console.log(error);
     }

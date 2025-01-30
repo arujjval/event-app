@@ -1,3 +1,3 @@
-import { signIn } from "./userControllers";
+import { signIn, login } from "./userControllers";
 
-export { signIn };
+export { signIn, login };
