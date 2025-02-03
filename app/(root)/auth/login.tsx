@@ -4,21 +4,17 @@ import { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { login } from '@/lib/userAuth/user'
-import { useDispatch } from 'react-redux'
-import { setUser } from '@/lib/redux/auth/authSlice'
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const dispatch = useDispatch();
 
   const handleLogin = async () => {
     try {
       const response = await login(email, password);
       
       if(response) {
-        dispatch(setUser(response.token));
         router.push('/');
       }
     } catch (error) {

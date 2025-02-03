@@ -23,8 +23,8 @@ function Card() {
     }
 
     return (
-        <TouchableOpacity className='w-full h-[410px] flex flex-col rounded-3xl 
-            border border-gray-300 flex-1' onPress={handlePress}>
+        <TouchableOpacity className='h-[410px] flex flex-col rounded-3xl 
+            border border-gray-300' onPress={handlePress}>
             <Image source={CardImage} 
             className='h-2/5 min-h-[200px] w-full rounded-t-3xl' 
             resizeMode='cover'/>

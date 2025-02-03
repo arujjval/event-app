@@ -7,8 +7,7 @@ import { StatusBar  } from 'react-native';
 import 'react-native-reanimated';
 import './global.css'
 import { useEffect, useState } from 'react';
-import { Provider } from 'react-redux';
-import store from '@/lib/redux/store';
+import { GlobalContextProvider } from '@/lib/context/globalProvider';
 
 export default function RootLayout() {
   const [fontsLoaded] =  useFonts({
@@ -38,9 +37,9 @@ export default function RootLayout() {
         backgroundColor="transparent"
         barStyle="light-content" 
       />
-      <Provider store={store}>
+      <GlobalContextProvider>
         <Stack screenOptions={{ headerShown: false }}/>
-      </Provider>
+      </GlobalContextProvider>
     </ThemeProvider>
   );
 }

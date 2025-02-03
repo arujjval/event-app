@@ -24,7 +24,9 @@ export const login = async (email: string, password: string) => {
             }
         });
 
-        await AsyncStorage.setItem('jwtToken', response!.data.token);
+        await AsyncStorage.setItem('user', response!.data.token);
+
+        console.log(response.data);
 
         return response.data
     } catch (error) {

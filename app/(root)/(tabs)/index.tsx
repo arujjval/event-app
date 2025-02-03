@@ -5,21 +5,26 @@ import { View, Text, Image, ScrollView, TouchableOpacity} from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Filters from '@/components/filters'
 import Card from '@/components/card'
-import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react'
-import jwtDecode from 'jwt-decode';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useGlobalContext } from '@/lib/context/globalProvider'
+import { JwtPayload } from 'jwt-decode'; 
+
+declare module 'jwt-decode' { 
+  interface JwtPayload {
+    username: string; 
+  }
+}
 
 function index() {
   const [user, setUser] = useState(null);
 
-  const token = useSelector((state: any) => state.auth.token);
+  const getUser = async () => {
+    const temp = await AsyncStorage.getItem('user')
+    console.log(temp)
+  }
 
-  useEffect(() => {
-    if (token) {
-      const decoded = jwtDecode(token);
-      setUser(decoded);
-    }
-  }, [token]);
+  const temp = useGlobalContext();
 
   return (
     <SafeAreaProvider className='w-full h-full'>
@@ -46,8 +51,8 @@ function index() {
       <View className='w-full h-full border border-t rounded-t-3xl border-gray-400'>
           <Filters />
 
-          <View className='m-10'>
-             <Text className='font-poppins-bold text-2xl text-gray-800'>
+          <View className=''>
+             <Text className='font-poppins-bold text-2xl text-gray-800 px-6'>
                 Recommended
              </Text>
 
@@ -56,18 +61,12 @@ function index() {
               showsHorizontalScrollIndicator={false}
               pagingEnabled
               className='mt-5'
-              contentContainerClassName='flex flex-row gap-5'>
+              contentContainerClassName='flex flex-row gap-5 pl-2'>
+                <Card />
                 <Card />
                 <Card />
              </ScrollView>
           </View>
-
-          <Text>
-            {}
-          </Text>
-
-          <Link href="/auth/sign-in">Sign-in</Link>
-          <Link href="/auth/login">Login</Link>
       </View>
     </SafeAreaProvider>
   )
