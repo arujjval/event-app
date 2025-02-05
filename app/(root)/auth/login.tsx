@@ -55,8 +55,7 @@ function Login() {
           </Text>
           <TouchableOpacity onPress={() => (router.push('/auth/sign-in'))}>
             <Text className='text-primary-100 font-poppins-medium
-              text-sm'
-              onPress={handleLogin}>
+              text-sm'>
                 Sign up
             </Text>
           </TouchableOpacity>

@@ -16,3 +16,6 @@ export { default as Users } from './users.png';
 export { default as VideoCameraAlt } from './video-camera-alt.png';
 export { default as Hide } from './hide.png';
 export { default as Show } from './show.png';
+export { default as Sparkle } from './sparkle.png';
+export { default as CreateEvent } from './create-event.png';
+export { default as SelectImage } from './selectImage.png';

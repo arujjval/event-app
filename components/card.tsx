@@ -1,5 +1,5 @@
 import { Avatar, CardImage } from '@/assets/images'
-import { Redirect } from 'expo-router'
+import { Redirect, useRouter } from 'expo-router'
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 
 function TagCard({ tag } : {
@@ -15,16 +15,16 @@ function TagCard({ tag } : {
 
 function Card() {
     const tags = ['Music', 'Food', 'Art', 'Fashion', 'Tech', 'Sports']
+    const router = useRouter()
 
     const handlePress = () => {
-        return (
-            <Redirect href='/event/id:123'/>
-        )
+        router.push('/event/123');
     }
 
     return (
-        <TouchableOpacity className='h-[410px] flex flex-col rounded-3xl 
-            border border-gray-300' onPress={handlePress}>
+        <TouchableOpacity 
+            className='h-[410px] flex flex-col rounded-3xl border border-gray-300' 
+            onPress={handlePress}>
             <Image source={CardImage} 
             className='h-2/5 min-h-[200px] w-full rounded-t-3xl' 
             resizeMode='cover'/>
