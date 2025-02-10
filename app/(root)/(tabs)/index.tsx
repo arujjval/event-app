@@ -1,14 +1,14 @@
 import GradientBg from '@/components/gradient-bg'
-import { AngleLeft, Search } from '@/assets/icons'
+import { Bell } from '@/assets/icons'
 import { Link, Redirect } from 'expo-router'
-import { View, Text, Image, ScrollView, TouchableOpacity} from 'react-native'
+import { View, Text, Image, ScrollView, TouchableOpacity, FlatList} from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import Filters from '@/components/filters'
 import Card from '@/components/card'
 import { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useGlobalContext } from '@/lib/context/globalProvider'
-import { JwtPayload } from 'jwt-decode'; 
+import Filters from '@/components/filters'
+import { HomeFilters } from '@/constants/filterValues'
 
 declare module 'jwt-decode' { 
   interface JwtPayload {
@@ -28,7 +28,7 @@ function index() {
 
   return (
     <SafeAreaProvider className='w-full h-full'>
-      <View className='w-full h-1/6 absolute top-0 left-0'>
+      <View className='w-full h-2/6 absolute top-0 left-0 z-1'>
         <GradientBg />
       </View>
       
@@ -40,7 +40,7 @@ function index() {
               Events
             </Text>
             <TouchableOpacity onPress={() => {}}>
-              <Image source={Search} className='size-6' style={{ tintColor: 'white' }}/>
+              <Image source={Bell} className='size-7' style={{ tintColor: 'white' }}/>
             </TouchableOpacity>
           </View>
         </View>
@@ -48,24 +48,16 @@ function index() {
 
       {/* TopBar */}
 
-      <View className='w-full h-full border border-t rounded-t-3xl border-gray-400'>
-          <Filters />
+      <View className='w-full h-full absolute z-2'>
+          <View className='h-1/6'></View>
+          <View className='w-full h-full rounded-t-2xl bg-white pt-8'>
+            <Filters filters={HomeFilters}/>
 
-          <View className=''>
-             <Text className='font-poppins-bold text-2xl text-gray-800 px-6'>
-                Recommended
-             </Text>
-
-             <ScrollView 
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              pagingEnabled
-              className='mt-5'
-              contentContainerClassName='flex flex-row gap-5 pl-2'>
-                <Card />
-                <Card />
-                <Card />
-             </ScrollView>
+            <ScrollView horizontal pagingEnabled className='w-full h-full mt-4'>
+              <Card />
+              <Card />
+              <Card />
+            </ScrollView>
           </View>
       </View>
     </SafeAreaProvider>

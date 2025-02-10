@@ -19,3 +19,6 @@ export { default as Show } from './show.png';
 export { default as Sparkle } from './sparkle.png';
 export { default as CreateEvent } from './create-event.png';
 export { default as SelectImage } from './selectImage.png';
+export { default as Edit } from './edit.png';
+export { default as Back } from './back.png';
+export { default as Bell } from './bell.png';
