@@ -1,7 +1,7 @@
 import GradientBg from '@/components/gradient-bg'
 import { Bell } from '@/assets/icons'
 import { Link, Redirect } from 'expo-router'
-import { View, Text, Image, ScrollView, TouchableOpacity, FlatList} from 'react-native'
+import { View, Text, Image, ScrollView, TouchableOpacity, FlatList, Pressable} from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Card from '@/components/card'
 import { useEffect, useState } from 'react'
@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useGlobalContext } from '@/lib/context/globalProvider'
 import Filters from '@/components/filters'
 import { HomeFilters } from '@/constants/filterValues'
+import NotificationsPopup from '@/components/notificationsPopup'
 
 declare module 'jwt-decode' { 
   interface JwtPayload {
@@ -18,6 +19,7 @@ declare module 'jwt-decode' {
 
 function index() {
   const [user, setUser] = useState(null);
+  const [showNotification, setShowNotification] = useState<boolean>(false);
 
   const getUser = async () => {
     const temp = await AsyncStorage.getItem('user')
@@ -34,15 +36,10 @@ function index() {
       
       <View className='w-full h-1/6 flex flex-row'>
         <View className='flex-1 justify-end mb-8 px-6'>
-          <View className='flex flex-row justify-between items-center'>
-            <Text className='text-center flex-1 pl-6
+            <Text className='text-center w-full
                 font-poppins-semiBold text-white text-2xl'>
               Events
             </Text>
-            <TouchableOpacity onPress={() => {}}>
-              <Image source={Bell} className='size-7' style={{ tintColor: 'white' }}/>
-            </TouchableOpacity>
-          </View>
         </View>
       </View>
 
@@ -50,7 +47,7 @@ function index() {
 
       <View className='w-full h-full absolute z-2'>
           <View className='h-1/6'></View>
-          <View className='w-full h-full rounded-t-2xl bg-white pt-8'>
+          <View className='w-full h-full rounded-t-2xl bg-white pt-2'>
             <Filters filters={HomeFilters}/>
 
             <ScrollView horizontal pagingEnabled className='w-full h-full mt-4'>

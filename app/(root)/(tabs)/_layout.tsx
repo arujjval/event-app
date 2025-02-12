@@ -44,6 +44,7 @@ export default function TabLayout() {
             tabBarIcon: ({ focused }) => <Image source={CreateEvent} 
                     style={{ tintColor: focused? '#E17205' : '#FFFFFF' }} 
                     className='size-7'/>,
+            tabBarStyle: { display: 'none' }
           }}
           />
           <Tabs.Screen
@@ -54,6 +55,7 @@ export default function TabLayout() {
             tabBarIcon: ({ focused }) => <Image source={UserCircle} 
                     style={{ tintColor: focused? '#E17205' : '#FFFFFF' }} 
                     className='size-7'/>,
+            tabBarStyle: { display: 'none' }
           }}
           />
         </Tabs>

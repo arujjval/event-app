@@ -3,7 +3,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import GradientBg from '@/components/gradient-bg';
-import { SelectImage } from '@/assets/icons';
+import { Back, SelectImage } from '@/assets/icons';
+import { router } from 'expo-router';
 
 const AllTags = ['Tech', 'Music', 'Food', 'Sports', 'Art', 'Fashion', 
     'Health', 'Business', 'Science', 'Education', 'Travel', 'Film', 'Charity', 'Other'];
@@ -41,7 +42,7 @@ function Create() {
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ['images', 'videos'],
+            mediaTypes: ['images'],
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
@@ -52,19 +53,25 @@ function Create() {
         if (!result.canceled) {
             setImage(result.assets[0].uri);
         }
-        };
+    };
 
     return ( 
         <SafeAreaProvider className='w-full h-full'>
-            <View className='w-full h-2/6 absolute top-0 left-0'>
+            <View className='w-full h-2/6 absolute top-0 left-0 z-1'>
                 <GradientBg />
             </View>
 
-            <View className='w-full h-1/6 flex flex-col justify-end pb-8'>
-                <Text className='font-poppins-semiBold text-white text-2xl
-                    text-center w-full'>
-                    Create Event
-                </Text>
+            <View className='w-full h-1/6 flex flex-row items-end pb-8'>
+                <View className='flex-row items-center w-full justify-between px-5'>
+                    <View className='rounded-full p-2 bg-gray-300/50'>
+                        <TouchableOpacity onPress={() => router.back()}>
+                            <Image source={Back} className='size-8' style={{ tintColor: 'white' }} />
+                        </TouchableOpacity>
+                    </View>
+                    <Text className='font-poppins-semiBold text-white text-2xl flex-1 text-center pr-8'>
+                        Create Event
+                    </Text>
+                </View>
             </View>
 
             {/* Header ends */}
