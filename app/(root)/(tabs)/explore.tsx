@@ -55,7 +55,7 @@ function Explore() {
                   <TextInput 
                   placeholder='Search' 
                   value={search}
-                  className='font-poppins-medium text-gray-900'
+                  className='font-poppins-medium text-gray-900 w-full'
                   onChange={(e) => setSearch(e.nativeEvent.text)}/>
                 </View>
             </View>

@@ -9,7 +9,7 @@ import { Link, router, useRouter } from 'expo-router';
 function Profile() {
   return (
     <View className="h-full w-full">
-      <View className='h-1/6 flex-row justify-between items-end pb-6 px-4'>
+      <View className='h-36 flex-row justify-between items-end pb-6 px-4'>
         <TouchableOpacity onPress={() => router.back()}>
           <Image source={Back} className="size-8" />
         </TouchableOpacity>

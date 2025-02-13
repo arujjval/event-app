@@ -1,6 +1,12 @@
 import userSchema, { IUser } from "./userSchema";
+import eventSchema, { IEvent } from "./eventSchema";
+import eventUserSchema, { IEventUser } from "./eventUserSchema";
 
 export {
     userSchema,
-    IUser
+    IUser,
+    eventSchema,
+    IEvent,
+    eventUserSchema,
+    IEventUser
 }

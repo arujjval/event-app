@@ -1,13 +1,19 @@
-import { View, Text, TouchableOpacity, Image, TextInput, ScrollView} from 'react-native'
+import { View, Text, TouchableOpacity, Image, TextInput, ScrollView, Button, Platform} from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import GradientBg from '@/components/gradient-bg';
-import { Back, SelectImage } from '@/assets/icons';
+import { Back, SelectImage, Twitch, Youtube } from '@/assets/icons';
 import { router } from 'expo-router';
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const AllTags = ['Tech', 'Music', 'Food', 'Sports', 'Art', 'Fashion', 
     'Health', 'Business', 'Science', 'Education', 'Travel', 'Film', 'Charity', 'Other'];
+
+enum StreamingPlatform {
+    Youtube = 'Youtube',
+    Twitch = 'Twitch'
+}
 
 function Create() {
     const [image, setImage] = useState<string | null>(null);
@@ -15,7 +21,20 @@ function Create() {
     const [description, setDescription] = useState<string>('');
     const [selectedTags, setSelectedTags] = useState<Array<string>>([]);
     const [LeftTags, setLeftTags] = useState<Array<string>>(AllTags);
-    const [date, setDate] = useState<string>('');
+    const [streamingPlatform, setStreamingPlatform] = useState<StreamingPlatform | null>(null);
+    const [StreamLink, setStreamLink] = useState<string>('');
+
+    const [date, setDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [showTimePicker, setShowTimePicker] = useState(false);
+
+    const onChange = (event: any, selectedDate?: Date) => {
+        if (selectedDate) {
+        setDate(selectedDate);
+        }
+        setShowDatePicker(false);
+        setShowTimePicker(false);
+    };
     
     const handleTag = (tag: string) => {
         setSelectedTags(prevSelectedTags => {
@@ -55,10 +74,24 @@ function Create() {
         }
     };
 
+    const handleCreateEvent = () => {
+        
+    }
+
     return ( 
         <SafeAreaProvider className='w-full h-full'>
             <View className='w-full h-2/6 absolute top-0 left-0 z-1'>
-                <GradientBg />
+                {image ? (
+                    <View className='w-full h-full'>
+                        <Image 
+                            source={{ uri: image }} 
+                            className='w-full h-full'
+                        />
+                        <View className='absolute top-0 left-0 w-full h-full bg-black opacity-50' />
+                    </View>
+                ) : (
+                    <GradientBg />
+                )}
             </View>
 
             <View className='w-full h-1/6 flex flex-row items-end pb-8'>
@@ -69,7 +102,7 @@ function Create() {
                         </TouchableOpacity>
                     </View>
                     <Text className='font-poppins-semiBold text-white text-2xl flex-1 text-center pr-8'>
-                        Create Event
+                        {!image && 'Create Event'}
                     </Text>
                 </View>
             </View>
@@ -77,10 +110,10 @@ function Create() {
             {/* Header ends */}
 
             <View className='w-full h-full absolute z-2'>
-                <View className='h-1/6'></View>
+                <View className={image?'h-1/4' : 'h-1/6'}></View>
                 <ScrollView 
                     className='w-full h-full bg-white rounded-t-2xl'
-                    contentContainerClassName='flex flex-col gap-5 mx-4 mt-10'>
+                    contentContainerClassName='flex flex-col gap-10 mx-4 mt-10 pb-32'>
                     <View className='flex flex-col gap-5'>
                         <Text className='text-gray-800 font-poppins-medium'>
                             Upload a cover image
@@ -92,7 +125,13 @@ function Create() {
                                     className='size-10' 
                                     style={{ tintColor: '#fff'}}/>
                             </TouchableOpacity>
-                            {image && <Image source={{ uri: image }} className='w-48 h-32' />}
+                            {image && 
+                            <TouchableOpacity 
+                                onPress={() => setImage(null)}>
+                                <Text className='font-poppins-light text-red-700'>
+                                    Remove
+                                </Text>
+                            </TouchableOpacity>}
                         </View>
                     </View>
 
@@ -153,6 +192,98 @@ function Create() {
                                 </TouchableOpacity>
                             ))}
                         </View>
+                    </View>
+
+                    <View>
+                        <Text className='font-poppins-medium text-gray-800 mb-2'>
+                            Event timings
+                        </Text>
+                        <View className='flex-row gap-16 justify-center mt-5'>
+                            <TouchableOpacity 
+                                className='bg-primary-200 py-2 px-8 rounded-full'
+                                onPress={() => setShowDatePicker(true)}>
+                                <Text className="font-poppins-semiBold text-white">
+                                    Select Day
+                                </Text>
+                            </TouchableOpacity>
+                            
+                            {showDatePicker && (
+                                <DateTimePicker 
+                                value={date} 
+                                mode="date" 
+                                display={Platform.OS === "ios" ? "spinner" : "calendar"} 
+                                onChange={onChange} 
+                                minimumDate={new Date()}
+                                />
+                            )}
+
+
+                            <TouchableOpacity 
+                                className='bg-primary-200 py-2 px-8 rounded-full'
+                                onPress={() => setShowTimePicker(true)}>
+                                <Text className="font-poppins-semiBold text-white">
+                                    Select Time
+                                </Text>
+                            </TouchableOpacity>
+
+                            {showTimePicker && (
+                                <DateTimePicker 
+                                value={date} 
+                                mode="time" 
+                                display={Platform.OS === "ios" ? "spinner" : "default"} 
+                                onChange={onChange} 
+                                />
+                            )}
+                        </View>
+
+                        <Text className='font-poppins-regular text-gray-700 text-center mt-5'>
+                            Starts on{" "}
+                            {date.toLocaleDateString("en-GB", {
+                                weekday: "long",
+                                day: "2-digit",
+                                month: "short",
+                                year: date.getFullYear() === new Date().getFullYear() ? undefined : "numeric",
+                            })}{" "}
+                            at{" "}
+                            {date.toLocaleTimeString("en-US", {
+                                hour: "numeric",
+                                minute: "2-digit",
+                                hour12: true,
+                            })}
+                        </Text>
+                    </View>
+
+                    <View className='flex flex-col gap-5'>
+                        <Text className='font-poppins-medium text-gray-800'>
+                            Choose your Streaming Platform
+                        </Text>
+                        <View className='flex-row gap-10 pl-1'>
+                            <TouchableOpacity onPress={() => setStreamingPlatform(StreamingPlatform.Youtube)}>
+                                <Image source={Youtube} className='size-12'/>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={() => setStreamingPlatform(StreamingPlatform.Twitch)}>
+                                <Image source={Twitch} className='size-12'/>
+                            </TouchableOpacity>
+                        </View>
+
+                        {streamingPlatform && 
+                        <TextInput 
+                            placeholder={`Enter your ${streamingPlatform} link`}
+                            className='border border-gray-300 py-4 px-3 
+                                rounded-3xl text-gray-800 font-poppins-regular'
+                            onChangeText={setStreamLink}
+                            value={StreamLink}
+                        />}
+                    </View>
+
+                    <View className='flex flex-row justify-center mt-10'>
+                        <TouchableOpacity onPress={handleCreateEvent}>
+                            <Text className='bg-primary-400 py-3 px-10 
+                                rounded-full text-white font-poppins-bold'>
+                                CREATE EVENT
+                            </Text> 
+                        </TouchableOpacity>
                     </View>
                 </ScrollView>
             </View>

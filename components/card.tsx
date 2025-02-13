@@ -49,7 +49,12 @@ function Card() {
                         <Text className='text-poppins-bold text-gray-500'>
                         Friday, May 6 
                         ● 
-                        7:00 am to 9:00 am
+                        Starts at 9:00 AM
+                        </Text>
+
+                        <Text className='font-poppins-regular text-gray-600 text-sm'>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                            Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
                         </Text>
 
                         <View className='mt-4'>

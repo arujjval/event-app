@@ -22,3 +22,5 @@ export { default as SelectImage } from './selectImage.png';
 export { default as Edit } from './edit.png';
 export { default as Back } from './back.png';
 export { default as Bell } from './bell.png';
+export { default as Youtube } from './youtube.png';
+export { default as Twitch } from './twitch.png';
