@@ -1,9 +1,9 @@
-import { signIn, login } from "../controllers";
+import { createEvent, updateEventStatus } from "../controllers";
 import { Router } from "express";
 
-const userRouter = Router();
+const eventRouter = Router();
 
-userRouter.post('/user/sign-in', signIn);
-userRouter.post('/user/login', login);
+eventRouter.post('/event/create', createEvent);
+eventRouter.post('/event/update-status', updateEventStatus);
 
-export default userRouter;
+export default eventRouter;

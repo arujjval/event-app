@@ -7,12 +7,13 @@ dotenv.config({ path: `${__dirname}/../../.env` });
 
 export const signIn = async (req: Request, res: Response) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password, profile_picture = null } = req.body;
 
         const newUser: IUser = new userSchema({
             username,
             email,
-            password
+            password,
+            profile_picture
         });
 
         await newUser.save();
@@ -46,6 +47,28 @@ export const login = async (req: Request, res: Response) => {
         );
 
         res.status(200).json({ message: "Login successful", token });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
+export const editProfile = async (req: Request, res: Response) => {
+    try {
+        const { email, username, profilePicture } = req.body;
+
+        const user = await userSchema.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.username = username || user.username;
+        user.profile_picture = profilePicture || user.profile_picture;
+
+        await user.save();
+
+        res.status(200).json({ message: "Profile updated successfully", user });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Server error" });

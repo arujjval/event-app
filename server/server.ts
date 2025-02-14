@@ -22,7 +22,7 @@ mongoose.connect(mongoURI)
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.log(err));
 
-app.use('/api', [routes.userRouter]);
+app.use('/api', [routes.userRouter, routes.eventRouter, routes.handleEventUserRouter]);
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
