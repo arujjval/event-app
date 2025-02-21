@@ -1,7 +1,5 @@
 import GradientBg from '@/components/gradient-bg'
-import { Bell } from '@/assets/icons'
-import { Link, Redirect } from 'expo-router'
-import { View, Text, Image, ScrollView, TouchableOpacity, FlatList, Pressable} from 'react-native'
+import { View, Text, Image, ScrollView, TouchableOpacity, FlatList, Pressable, ActivityIndicator} from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Card from '@/components/card'
 import { useEffect, useState } from 'react'
@@ -9,7 +7,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useGlobalContext } from '@/lib/context/globalProvider'
 import Filters from '@/components/filters'
 import { HomeFilters } from '@/constants/filterValues'
-import NotificationsPopup from '@/components/notificationsPopup'
+import { getLatestEvents } from '@/lib/event/event'
+import { useApiQuery } from '@/lib/useApi'
+import { Event, User } from '@/constants/types'
 
 declare module 'jwt-decode' { 
   interface JwtPayload {
@@ -18,15 +18,25 @@ declare module 'jwt-decode' {
 }
 
 function index() {
-  const [user, setUser] = useState(null);
-  const [showNotification, setShowNotification] = useState<boolean>(false);
+  const [user, setUser] = useState<User>();
+  const [filter, setFilter] = useState<string>('Recommended');
+  const [events, setEvents] = useState<any[]>([]);
 
-  const getUser = async () => {
-    const temp = await AsyncStorage.getItem('user')
-    console.log(temp)
-  }
+  const {
+    data: recommendedEvents,
+    isLoading: isLoadingRecommended,
+    error: errorRecommended,
+    isSuccess: isSuccessRecommended,
+  } = useApiQuery(getLatestEvents, []);
 
-  const temp = useGlobalContext();
+  useEffect(() => {
+    if(filter == 'Recommended' && isSuccessRecommended) {
+        setEvents(recommendedEvents.data);
+      } 
+    else {
+      setEvents([]);
+    }
+  }, [filter, isSuccessRecommended])
 
   return (
     <SafeAreaProvider className='w-full h-full'>
@@ -48,12 +58,15 @@ function index() {
       <View className='w-full h-full absolute z-2'>
           <View className='h-1/6'></View>
           <View className='w-full h-full rounded-t-2xl bg-white pt-2'>
-            <Filters filters={HomeFilters}/>
-
-            <ScrollView horizontal pagingEnabled className='w-full h-full mt-4'>
-              <Card />
-              <Card />
-              <Card />
+            <Filters filters={HomeFilters} 
+              onFilterChange={(f) => setFilter(f)}/>
+            <ScrollView 
+              horizontal 
+              pagingEnabled 
+              className='w-full h-full mt-4'>
+              {events.map((event: Event, index: number) => (
+                  <Card key={index} event={event}/>
+              ))}
             </ScrollView>
           </View>
       </View>

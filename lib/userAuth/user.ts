@@ -1,18 +1,19 @@
-import axios from "axios";
 import api from "../api";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export const signUp = async (username: string, email: string, password: string) => {
+export const signUp = async ({ username, email, password } : { username: string, email: string, password: string }) => {
     try {
+        console.log(username, email, password)
         const response = await api.post('/user/sign-in', { username, email, password }, {
             headers: {
-            'Content-Type': 'application/json'
+                'Content-Type': 'application/json'
             }
         });
         
         return response.data;
     } catch (error) {
-        return console.log(error);
+        console.log(error);
+        return error;
     }
 }
 
@@ -23,6 +24,8 @@ export const login = async (email: string, password: string) => {
                 'Content-Type': 'application/json'
             }
         });
+
+
 
         await AsyncStorage.setItem('user', response!.data.token);
 

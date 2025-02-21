@@ -35,6 +35,8 @@ function Profile() {
       <View className='h-6 w-full bg-gray-200/50'></View>
 
       <Filters filters={ProfileFilters}/>
+
+      <Link href={'/(root)/auth/sign-in'}>Sign In</Link>
     </View>
   );
 }

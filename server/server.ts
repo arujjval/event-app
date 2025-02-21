@@ -8,12 +8,7 @@ import cors from 'cors';
 const app = express();
 const port = 3000;
 
-const corsOptions = {
-    origin: '*', 
-    optionsSuccessStatus: 200
-};
-
-app.use(cors(corsOptions));
+app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
 dotenv.config({ path: `${__dirname}/../.env` });
 

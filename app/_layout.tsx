@@ -1,15 +1,17 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import * as Font from "expo-font";
 import { StatusBar  } from 'react-native';
 import 'react-native-reanimated';
 import './global.css'
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { GlobalContextProvider } from '@/lib/context/globalProvider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export default function RootLayout() {
+  const queryClient = new QueryClient();
+
   const [fontsLoaded] =  useFonts({
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
     "Poppins-ExtraBold": require("../assets/fonts/Poppins-ExtraBold.ttf"),
@@ -37,9 +39,11 @@ export default function RootLayout() {
         backgroundColor="transparent"
         barStyle="light-content" 
       />
-      <GlobalContextProvider>
-        <Stack screenOptions={{ headerShown: false }}/>
-      </GlobalContextProvider>
+      <QueryClientProvider client={queryClient}>
+        <GlobalContextProvider>
+          <Stack screenOptions={{ headerShown: false }}/>
+        </GlobalContextProvider>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

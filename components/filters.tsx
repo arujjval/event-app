@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react"
 import { TouchableOpacity, View, Text, ScrollView } from "react-native"
 
-function Filters({ filters } : { filters: string[] }) {
+function Filters({ filters, onFilterChange }
+    : { filters: string[], onFilterChange: (filter: string) => void }) {
     const [selectedFilter, setSelectedFilter] = useState<string>(filters[0]);
 
     const handleTouch = (filter: string) => {
         setSelectedFilter(filter);
+        onFilterChange(filter);
     }
     
     return (

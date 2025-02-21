@@ -32,12 +32,14 @@ export const login = async (req: Request, res: Response) => {
 
         if (!user) {
             res.status(404).json({ message: "User not found" });
+            return;
         }
 
         const isMatch = user!.password === password;
 
         if (!isMatch) {
             res.status(400).json({ message: "Invalid credentials" });
+            return;
         }
 
         const token = jwt.sign(

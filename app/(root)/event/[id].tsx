@@ -1,7 +1,11 @@
 import { Calendar } from '@/assets/icons';
 import { Avatar, CardImage } from '@/assets/images';
+import { Event as EventType } from '@/constants/types';
+import { getEventById, getLatestEvents } from '@/lib/event/event';
+import { useApiQuery } from '@/lib/useApi';
+import { useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native'
 
 enum EventStatus {
@@ -12,7 +16,27 @@ enum EventStatus {
 
 function Event() {
     const { id } = useLocalSearchParams();
-    const [status, setStatus] = useState<EventStatus>(EventStatus.ENDED);
+    const [event, setEvent] = useState<EventType | null>(null);
+    const [status, setStatus] = useState<EventStatus>(EventStatus.UPCOMING);
+
+    const { data: eventData, isSuccess: isSuccessEvent } = useApiQuery(getEventById, [id as string]);
+
+    useEffect(() => {
+      if(isSuccessEvent) {
+        setEvent(eventData.data);
+        const currentTime = new Date();
+        const eventDateTime = new Date(`${eventData.data.on_date}T${eventData.data.on_time}`);
+        const eventEndTime = new Date(eventDateTime.getTime() + (2 * 60 * 60 * 1000)); // Assuming 2 hours duration
+
+        if (currentTime < eventDateTime) {
+            setStatus(EventStatus.UPCOMING);
+        } else if (currentTime >= eventDateTime && currentTime <= eventEndTime) {
+            setStatus(EventStatus.ONGOING);
+        } else {
+            setStatus(EventStatus.ENDED);
+        }
+      }
+    }, [isSuccessEvent])
 
     return (
         <View className='w-full h-full flex flex-col'>
@@ -23,7 +47,7 @@ function Event() {
 
                 <View className='mx-5 my-8 flex flex-col'>
                     <View className='pb-4'>
-                        <Text className='font-poppins-bold text-3xl text-gray-800'>Event Title</Text>
+                        <Text className='font-poppins-bold text-3xl text-gray-800'>{event?.title}</Text>
                     </View>
 
                     <View className='py-4 border-y border-slate-200'>
@@ -32,8 +56,23 @@ function Event() {
                                 <Image source={Calendar} className='size-8' style={{ tintColor: '#fff' }} />
                             </View>
                             <View className='flex flex-col justify-center'>
-                                <Text className='font-poppins-semiBold text-gray-800'>Friday, September 29, 2023</Text>
-                                <Text className='font-poppins-medium text-primary-300'>Starts at 09:00 AM</Text>
+                                <Text className='font-poppins-semiBold text-gray-800'>
+                                    {event?.on_date ? new Date(event.on_date).toLocaleDateString('en-US', {
+                                        weekday: 'long',
+                                        day: 'numeric',
+                                        month: 'long',
+                                        year: 'numeric'
+                                    }) : ''}
+                                </Text>
+                                <Text className='font-poppins-medium text-primary-300'>
+                                    Starts at {event?.on_time ? 
+                                        new Date(`2000-01-01T${event.on_time}`)
+                                        .toLocaleTimeString('en-US', {
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: true
+                                    }) : ''}
+                                </Text>
                             </View>
                         </View>
                     </View>
@@ -41,9 +80,7 @@ function Event() {
                     <View className='py-8 border-y border-slate-200'>
                         <Text className='font-poppins-bold text-xl text-gray-800'>About the event</Text>
                         <Text className='font-poppins-regular text-gray-800 mt-4'>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod t
-                            empor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
-                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                            {event?.about}
                         </Text>
                     </View>
 
@@ -51,7 +88,7 @@ function Event() {
                         <Text className='font-poppins-bold text-xl text-gray-800'>Streamer</Text>
                         <View className='flex-row items-center mt-4 gap-5'>
                             <Image source={Avatar} className='size-16 rounded-full'/>
-                            <Text className='font-poppins-semiBold'>Streamer Name</Text>
+                            <Text className='font-poppins-semiBold'>{event && event.streamer.username}</Text>
                         </View>
                     </View>
 

@@ -1,5 +1,25 @@
-import { signIn, login } from "./userControllers";
-import { createEvent, updateEventStatus } from "./eventControllers";
-import { handleEventUser } from "./eventUserControllers";
+import { 
+    signIn, 
+    login 
+} from "./userControllers";
 
-export { signIn, login, createEvent, updateEventStatus, handleEventUser };
+import { 
+    createEvent, 
+    updateEventStatus, 
+    getLatestEvents, 
+    getEventById
+} from "./eventControllers";
+
+import { 
+    handleEventUser 
+} from "./eventUserControllers";
+
+export { 
+    signIn, 
+    login, 
+    createEvent, 
+    updateEventStatus, 
+    handleEventUser, 
+    getLatestEvents,
+    getEventById
+};

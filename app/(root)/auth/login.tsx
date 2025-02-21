@@ -1,26 +1,40 @@
 import { Hide, Show } from '@/assets/icons'
 import { router } from 'expo-router'
-import { useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native'
+import { useEffect, useState } from 'react'
+import { View, Text, TextInput, TouchableOpacity, Image, Alert, ActivityIndicator } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { login } from '@/lib/userAuth/user'
+import { useApiMutation } from '@/lib/useApi'
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = async () => {
-    try {
-      const response = await login(email, password);
-      
-      if(response) {
+  const { mutate: loginMutate, 
+    isSuccess, 
+    isError, 
+    isPending } = useApiMutation(login);
+
+    useEffect(() => {
+      if(isSuccess) {
         router.push('/');
       }
-    } catch (error) {
-      Alert.alert('Error', 'Invalid credentials');
+      if(isError) {
+        Alert.alert('Error', 'User not found.');
+      }
+    }, [isSuccess, isError])
+
+    const handleLogin = async () => {
+      try {
+        loginMutate({
+          email,
+          password
+        });
+      } catch (error) {
+        Alert.alert('Error', 'Invalid credentials');
+      }
     }
-  }
 
   return (
     <SafeAreaProvider className='w-full h-full'>
@@ -64,8 +78,12 @@ function Login() {
 
         <TouchableOpacity className='bg-primary-200 rounded-full
           py-3 px-5 mt-5' onPress={handleLogin}>
-          <Text className='text-center text-white font-poppins-semiBold
-          uppercase'>Login</Text>
+          {(isPending)? (
+              <ActivityIndicator size="small" color="#ffffff" />
+          ) : (
+              <Text className='text-center text-white font-poppins-semiBold
+              uppercase'>Login</Text>
+          )}
         </TouchableOpacity>
       </View>
     </SafeAreaProvider>

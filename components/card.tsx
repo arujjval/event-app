@@ -1,5 +1,6 @@
 import { Avatar, CardImage } from '@/assets/images'
-import { Redirect, useRouter } from 'expo-router'
+import { Event } from '@/constants/types'
+import { useRouter } from 'expo-router'
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 
 function TagCard({ tag } : {
@@ -15,12 +16,13 @@ function TagCard({ tag } : {
     )
 }
 
-function Card() {
-    const tags = ['Music', 'Food', 'Art', 'Fashion', 'Tech', 'Sports']
+function Card({ event } : { event: Event }) {
+    const tags = event.tags;
     const router = useRouter()
 
     const handlePress = () => {
-        router.push('/event/123');
+        console.log(event._id)
+        router.push(`/event/${event._id}`);
     }
 
     return (
@@ -33,28 +35,36 @@ function Card() {
                     resizeMode='cover'/>
                     <View className='px-4 py-2 flex flex-col gap-2'>
                         <View className='flex flex-row'>
-                        {tags.slice(0, 3).map((tag, index) => <TagCard key={index} tag={tag}/>)}
-                        {tags.length > 3 && (
+                        {tags!.slice(0, 3).map((tag: string, index: number) => <TagCard key={index} tag={tag}/>)}
+                        {tags!.length > 3 && (
                         <Text className='font-poppins-regular
                         text-gray-800 text-xs my-1'>
-                            +{tags.length - 3}
+                            +{tags!.length - 3}
                         </Text>
                         )}
                         </View>
 
                         <Text className='font-poppins-bold text-2xl 
                         text-gray-800 mt-2'>
-                        Party 1
+                        {event.title}
                         </Text>
                         <Text className='text-poppins-bold text-gray-500'>
-                        Friday, May 6 
-                        ● 
-                        Starts at 9:00 AM
+                        {new Date(event.on_date).toLocaleDateString('en-US', {
+                            weekday: 'long',
+                            day: 'numeric',
+                            month: 'long'
+                        })}&nbsp;
+                        ●
+                        &nbsp;
+                        Starts at {new Date(`2000-01-01T${event.on_time}`).toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true
+                        })}
                         </Text>
 
                         <Text className='font-poppins-regular text-gray-600 text-sm'>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                            Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
+                            {event.about}
                         </Text>
 
                         <View className='mt-4'>
@@ -70,7 +80,7 @@ function Card() {
                                 />
 
                                 <Text className='font-poppins-medium text-gray-800'>
-                                    Huehue Kumar
+                                    {event?.streamer?.username}
                                 </Text>
                             </View>
                         </View>

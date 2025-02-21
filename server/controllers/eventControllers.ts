@@ -67,3 +67,49 @@ export const updateEventStatus = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Internal server error" });
     }
 }
+
+export const getLatestEvents = async (req: Request, res: Response) => {
+    try {
+        const events = await eventSchema
+            .find()
+            .sort({ createdAt: -1 })
+            .limit(20);
+
+        if (!events || events.length === 0) {
+            res.status(404).json({ message: "No events found" });
+            return;
+        }
+
+        res.status(200).json({ 
+            message: "Events fetched successfully",
+            data: events 
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const getEventById = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        const event = await eventSchema.findById(id)
+            .populate('streamer', 'username profile_picture');
+
+        if (!event) {
+            res.status(404).json({ message: "Event not found" });
+            return;
+        }
+
+        res.status(200).json({ 
+            message: "Event fetched successfully",
+            data: event 
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+

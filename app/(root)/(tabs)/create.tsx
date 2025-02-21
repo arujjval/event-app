@@ -6,6 +6,8 @@ import GradientBg from '@/components/gradient-bg';
 import { Back, SelectImage, Twitch, Youtube } from '@/assets/icons';
 import { router } from 'expo-router';
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { createEvent } from '@/lib/event/event';
+import { useMutationApi } from '@/lib/useApi';
 
 const AllTags = ['Tech', 'Music', 'Food', 'Sports', 'Art', 'Fashion', 
     'Health', 'Business', 'Science', 'Education', 'Travel', 'Film', 'Charity', 'Other'];
@@ -18,37 +20,39 @@ enum StreamingPlatform {
 function Create() {
     const [image, setImage] = useState<string | null>(null);
     const [title, setTitle] = useState<string>('');
-    const [description, setDescription] = useState<string>('');
-    const [selectedTags, setSelectedTags] = useState<Array<string>>([]);
+    const [about, setAbout] = useState<string>('');
+    const [tags, setTags] = useState<Array<string>>([]);
     const [LeftTags, setLeftTags] = useState<Array<string>>(AllTags);
-    const [streamingPlatform, setStreamingPlatform] = useState<StreamingPlatform | null>(null);
-    const [StreamLink, setStreamLink] = useState<string>('');
+    const [stream_platform, setStreamPlatform] = useState<StreamingPlatform | null>(null);
+    const [link, setLink] = useState<string>('');
 
-    const [date, setDate] = useState(new Date());
+    const [on_date, setOnDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
 
+    const { mutate, isPending, isError } = useMutationApi(createEvent);
+    
     const onChange = (event: any, selectedDate?: Date) => {
         if (selectedDate) {
-        setDate(selectedDate);
+        setOnDate(selectedDate);
         }
         setShowDatePicker(false);
         setShowTimePicker(false);
     };
     
     const handleTag = (tag: string) => {
-        setSelectedTags(prevSelectedTags => {
-            if (prevSelectedTags.includes(tag)) {
-                return prevSelectedTags.filter(t => t !== tag);
-            } else if (prevSelectedTags.length < 5) {
-                return [...prevSelectedTags, tag];
+        setTags(prevTags => {
+            if (prevTags.includes(tag)) {
+                return prevTags.filter(t => t !== tag);
+            } else if (prevTags.length < 5) {
+                return [...prevTags, tag];
             } else {
-                return prevSelectedTags;
+                return prevTags;
             }
         });
 
         setLeftTags(prevLeftTags => {
-            if (selectedTags.length === 5) {
+            if (tags.length === 5) {
                 return prevLeftTags;
             }
 
@@ -75,7 +79,16 @@ function Create() {
     };
 
     const handleCreateEvent = () => {
+        console.log('Creating event');
+        mutate({ title, about, on_date, on_time: on_date, streamer: 'streamer', tags, status: 'UPCOMING', stream_platform, link });
         
+        if (isPending) {
+            console.log('Loading...');
+        }
+
+        if(isError) {
+            console.log('Error');
+        }
     }
 
     return ( 
@@ -153,8 +166,8 @@ function Create() {
                         About the event
                         </Text>
                         <TextInput
-                            onChangeText={setDescription}
-                            value={description}
+                            onChangeText={setAbout}
+                            value={about}
                             placeholder='What is your event about?'
                             className='border border-gray-300 py-4 px-3 
                                 rounded-3xl text-gray-800 font-poppins-regular'
@@ -168,7 +181,7 @@ function Create() {
                             Select relevant tags
                         </Text>
                         <View className='flex flex-row flex-wrap gap-2'>
-                            {selectedTags.map((tag) => (
+                            {tags.map((tag) => (
                                 <TouchableOpacity key={tag} onPress={() => handleTag(tag)}>
                                     <Text className='font-poppins-regular text-sm text-white
                                         bg-primary-400 px-3 py-1 rounded-full'>
@@ -209,7 +222,7 @@ function Create() {
                             
                             {showDatePicker && (
                                 <DateTimePicker 
-                                value={date} 
+                                value={on_date} 
                                 mode="date" 
                                 display={Platform.OS === "ios" ? "spinner" : "calendar"} 
                                 onChange={onChange} 
@@ -228,7 +241,7 @@ function Create() {
 
                             {showTimePicker && (
                                 <DateTimePicker 
-                                value={date} 
+                                value={on_date} 
                                 mode="time" 
                                 display={Platform.OS === "ios" ? "spinner" : "default"} 
                                 onChange={onChange} 
@@ -238,14 +251,14 @@ function Create() {
 
                         <Text className='font-poppins-regular text-gray-700 text-center mt-5'>
                             Starts on{" "}
-                            {date.toLocaleDateString("en-GB", {
+                            {on_date.toLocaleDateString("en-GB", {
                                 weekday: "long",
                                 day: "2-digit",
                                 month: "short",
-                                year: date.getFullYear() === new Date().getFullYear() ? undefined : "numeric",
+                                year: on_date.getFullYear() === new Date().getFullYear() ? undefined : "numeric",
                             })}{" "}
                             at{" "}
-                            {date.toLocaleTimeString("en-US", {
+                            {on_date.toLocaleTimeString("en-US", {
                                 hour: "numeric",
                                 minute: "2-digit",
                                 hour12: true,
@@ -258,22 +271,22 @@ function Create() {
                             Choose your Streaming Platform
                         </Text>
                         <View className='flex-row gap-10 pl-1'>
-                            <TouchableOpacity onPress={() => setStreamingPlatform(StreamingPlatform.Youtube)}>
+                            <TouchableOpacity onPress={() => setStreamPlatform(StreamingPlatform.Youtube)}>
                                 <Image source={Youtube} className='size-12'/>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => setStreamingPlatform(StreamingPlatform.Twitch)}>
+                            <TouchableOpacity onPress={() => setStreamPlatform(StreamingPlatform.Twitch)}>
                                 <Image source={Twitch} className='size-12'/>
                             </TouchableOpacity>
                         </View>
 
-                        {streamingPlatform && 
+                        {stream_platform && 
                         <TextInput 
-                            placeholder={`Enter your ${streamingPlatform} link`}
+                            placeholder={`Enter your ${stream_platform} link`}
                             className='border border-gray-300 py-4 px-3 
                                 rounded-3xl text-gray-800 font-poppins-regular'
-                            onChangeText={setStreamLink}
-                            value={StreamLink}
+                            onChangeText={setLink}
+                            value={link}
                         />}
                     </View>
 
